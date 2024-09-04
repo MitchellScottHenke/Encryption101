@@ -1,5 +1,6 @@
 use chacha20::cipher::{KeyIvInit, StreamCipher};
 use chacha20::{ChaCha20};
+use rfd::FileDialog;
 use std::fs::{File};
 use std::io::{Read, Write};
 
@@ -52,6 +53,16 @@ fn main() {
     let nonce = b"unique nonce";
     print!("{:?}", padded_key);
 
-    encrypt_file("input.txt", "encrypted.txt", &padded_key, nonce);
-    decrypt_file("encrypted.txt", "decrypted.txt", &padded_key, nonce);
+    // Open file dialog to select input file
+    let input_file = FileDialog::new()
+        .add_filter("Text files", &["txt"])
+        .pick_file()
+        .expect("No file selected")
+        .display()
+        .to_string();
+
+    let output_file = "encrypted.txt";
+
+    encrypt_file(&input_file, "encrypted.txt", &padded_key, nonce);
+    decrypt_file(output_file, "decrypted.txt", &padded_key, nonce);
 }
