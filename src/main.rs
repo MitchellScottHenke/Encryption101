@@ -3,6 +3,7 @@ use chacha20::{ChaCha20};
 use rfd::FileDialog;
 use std::fs::{File};
 use std::io::{Read, Write};
+use std::io;
 
 fn encrypt_file(input_file: &str, output_file: &str, key: &[u8], nonce: &[u8]) {
     let mut cipher = ChaCha20::new(key.into(), nonce.into());
@@ -53,16 +54,40 @@ fn main() {
     let nonce = b"unique nonce";
     print!("{:?}", padded_key);
 
-    // Open file dialog to select input file
-    let input_file = FileDialog::new()
-        .add_filter("Text files", &["txt"])
-        .pick_file()
-        .expect("No file selected")
-        .display()
-        .to_string();
 
-    let output_file = "encrypted.txt";
+    println!("Select an option:");
+    println!("1. Encrypt a file");
+    println!("2. Decrypt a file");
 
-    encrypt_file(&input_file, "encrypted.txt", &padded_key, nonce);
-    decrypt_file(output_file, "decrypted.txt", &padded_key, nonce);
+    let mut choice = String::new();
+    io::stdin().read_line(&mut choice).expect("Failed to read input");
+    let choice = choice.trim();
+
+    match choice {
+        "1" => {
+            let input_file = FileDialog::new()
+                .add_filter("Text files", &["txt"])
+                .pick_file()
+                .expect("No file selected")
+                .display()
+                .to_string();
+
+            let output_file = "encrypted.txt";
+            encrypt_file(&input_file, output_file, &padded_key, nonce);
+            println!("File encrypted successfully!");
+        }
+        "2" => {
+            let input_file = FileDialog::new()
+                .add_filter("Text files", &["txt"])
+                .pick_file()
+                .expect("No file selected")
+                .display()
+                .to_string();
+
+            let output_file = "decrypted.txt";
+            decrypt_file(&input_file, output_file, &padded_key, nonce);
+            println!("File decrypted successfully!");
+        }
+        _ => println!("Invalid choice! Please select 1 or 2."),
+    }
 }
