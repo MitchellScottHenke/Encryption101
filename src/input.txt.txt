@@ -1,0 +1,1 @@
+This is a sample of text that I would like to try to encrypt via a Rust program, and then decrypt. I don't need anything terribly important in here, I just need something that the program can work with. I wonder if it will be able to handle more that 256 characters? I really hope so. I'm also really curious as to what the encrypted text will look like.
